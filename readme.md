@@ -50,7 +50,7 @@ You can add a bunch of Models for a specific use case to the Responsible AI fram
 
 3.Responsible index is calcualted using ResponsibleML.  Install ResponsibleML
 
->     !pip install -i https://test.pypi.org/simple/ spectre
+>     !pip install -i https://test.pypi.org/simple/ responsibleML
 
 ## How it works
 
