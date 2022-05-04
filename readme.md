@@ -30,7 +30,7 @@ At the time of this writing, the MVP of the Responsible AI framework supports th
 
 You can add a bunch of Models for a specific use case to the Responsible AI framework and Responsible AI ranks them on the basis of its over health or health per dimension
 
-![image](https://user-images.githubusercontent.com/7538839/160517464-a716c6d9-bbf3-4255-8710-d090e11abf1a.png)
+![image](https://user-images.githubusercontent.com/7538839/166708253-8431e3a9-a277-445c-8536-ea341a45553d.png)
 
 You can add a bunch of Models for a specific use case to the Responsible AI framework and Responsible AI ranks them on the basis of its over health or health per dimension
 
