@@ -8,7 +8,7 @@ Responsible AI is a AI Governance framework.  With increased use of AI / ML in c
 - Differential Privacy:  Differential Privacy of data used in model training exercise
 - Interpretability:  Ability of the model to be interpretable
 - Consistency:  Model consistency across multiple test data sets
-- Transparency:  Interpretability of the Model
+- Transparency:  Explainability of the Model
 - Bias and Fairness: Bias and Fairness of the Model
 - Environment friendly:  Carbon Emissions of the Model training / Inference
 
