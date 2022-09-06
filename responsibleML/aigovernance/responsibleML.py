@@ -4,8 +4,8 @@ import pandas as pd
 
 import json
 from enum import Enum
+import logging
 
-import fairlens as fl
 import shap
 from codecarbon import EmissionsTracker
 from captum.attr import IntegratedGradients
@@ -49,13 +49,13 @@ class Emissions_Level(Enum):
     LOW = 500
     MEDIUM = 10000
 
-class responsible_model:
+class base_rai_model:
     """Type of Framework used to train the model"""
     
     __model_name = None
-    __framework = ModelFramework.SKLEARN
-    __ml_problem = ProblemType.BINARY
-    __datatype = DataType.TABULAR
+    __framework = None
+    __ml_problem = None
+    __datatype = None
     
     __emissions = 0.0
     __class_balance  = 0.0
@@ -73,11 +73,12 @@ class responsible_model:
     ### EmissionsTracker ###
     __tracker = None
     
-    def __init__(self, model_name:string, ml_problem: ProblemType, framework: ModelFramework):
+    def __init__(self, model_name:string, ml_problem: ProblemType):
         
         # General Model information
         self.__model_name = model_name
-        self.__framework = framework
+        self.__framework = ModelFramework.SKLEARN
+        self.__datatype = DataType.TABULAR
         self.__ml_problem = ml_problem
         
         # Responsible Model Metrics
@@ -205,26 +206,12 @@ class responsible_model:
         self.__calculate_model_index()
             
     def __calculate_class_balance_index(self):
-        if self.__class_balance >= 0.4:
+        if self.__class_balance >= 0.6:
             self.__class_balance_index = 3
-        elif self.__class_balance > 0.2 and self.__class_balance < 0.4:
+        elif self.__class_balance > 0.4 and self.__class_balance < 0.6:
             self.__class_balance_index = 2
         else:
             self.__class_balance_index = 1
-    
-     ### ---------- Bias Index ---------- ###     
-    
-    def calculate_bias(self, df, label:string, sensitive_attributes:list):
-        
-        #if no sensitive attributes are provided, identify them automatically
-        if len(sensitive_attributes) == 0:
-               sensitive_attributes =  fl.FairnessScorer(df, label).sensitive_attrs
-        
-        #get the fairness score for the sensitive attributes
-        fscorer = fl.FairnessScorer(df, "target", sensitive_attributes)
-        
-    def __calculate_bias_index(self):
-        return
     
     ### ---------- Interpretability Index ---------- ###        
     
@@ -295,10 +282,10 @@ class responsible_model:
 ##################################### PyTorch Model #########################################
 #############################################################################################
 
-class pytorch_model(responsible_model):
+class pytorch_model(base_rai_model):
     
-    def __init__(self, model_name):
-        super().__init__(model_name)
+    def __init__(self, model_name, ml_problem:ProblemType):
+        super().__init__(model_name, ml_problem)
         super().set_framework(ModelFramework.PYTORCH)
     
     ### ---------- Overwrite Interpretability Index ---------- ###        
@@ -316,13 +303,13 @@ class pytorch_model(responsible_model):
         total_weightage = np.sum(importance)
         key_features_weightage = importance[0] + importance[1] + importance[2]
         
-        super().set_interpretability = key_features_weightage / total_weightage
+        super().set_interpretability(key_features_weightage / total_weightage)
         
 #############################################################################################
 ##################################### TensorFlow Model  #####################################
 #############################################################################################
 
-class tensorflow_model(responsible_model):
+class tensorflow_model(base_rai_model):
     
     def __init__(self, model_name):
         super().__init__(model_name)
